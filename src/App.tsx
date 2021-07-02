@@ -1,6 +1,12 @@
+import { AuthProvider } from './hooks/AuthContext';
+import { Routes } from './routes/Routes';
+
+
 function App() {
   return (
-    <h1>Hello World</h1>
+    <AuthProvider>
+      <Routes />
+    </AuthProvider>
   );
 }
 
