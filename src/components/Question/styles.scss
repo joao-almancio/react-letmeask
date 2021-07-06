@@ -7,6 +7,19 @@
   & + .question {
     margin-top: 8px;
   }
+
+  &.highlighted:not(.answered) {
+    background-color: #f4f0ff;
+    border: 1px solid #835afd;
+
+    footer .user-info span {
+      color: #29292e;
+    }
+  }
+
+  &.answered {
+    background-color: #dbdcdd;
+  }
 }
 
 p {
@@ -35,5 +48,10 @@ footer {
       color: #797980;
       font-size: 14px;
     }
+  }
+
+  .action-button-container {
+    display: flex;
+    gap: 8px
   }
 }

@@ -3,11 +3,11 @@ import { ButtonHTMLAttributes } from 'react'
 import './styles.scss';
 
 type LikeButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  likesNumber?: number;
+  likeCount?: number;
   likeId?: string
 }
 
-export function LikeButton({ likesNumber = 0, likeId = '', ...rest }: LikeButtonProps) {
+export function LikeButton({ likeCount = 0, likeId = '', ...rest }: LikeButtonProps) {
   return (
     <button
       {...rest}
@@ -16,7 +16,7 @@ export function LikeButton({ likesNumber = 0, likeId = '', ...rest }: LikeButton
       aria-label="Marcar como gostei">
 
       {
-        likesNumber > 0 && <span>{likesNumber}</span>
+        likeCount > 0 && <span>{likeCount}</span>
       }
 
 

@@ -10,6 +10,7 @@ import { database } from '../../services/firebase';
 import "./styles.scss";
 import logImg from '../../assets/images/logo.svg';
 import { useRoom } from '../../hooks/useRoom';
+import { LikeButton } from '../../components/LikeButton';
 
 type RoomParams = {
   id: string
@@ -18,7 +19,7 @@ type RoomParams = {
 export function Room() {
   const { id: roomId } = useParams<RoomParams>();
   const [newQuestion, setNewQuestion] = useState('');
-  const { user } = useAuth();
+  const { user, signIn } = useAuth();
   const { questions, title } = useRoom(roomId);
 
   async function handleSendQuestion(event: FormEvent<HTMLFormElement>) {
@@ -43,8 +44,23 @@ export function Room() {
     setNewQuestion('')
   }
 
-  async function handleLikeQuestion(questionId: string, likeId: string|undefined) {
-    if (!user) return;
+  async function handleSignIn() {
+    try {
+      await signIn()
+    } catch (error) {
+      alert('Não é possível logar!')
+      console.error(error)
+    }
+    return
+  }
+
+  async function handleLikeQuestion(questionId: string, likeId: string | undefined) {
+    if (!user) {
+      handleSignIn();
+      return
+    }
+
+    console.log('tem user')
     if (likeId) {
       const newLike = await database.ref(`rooms/${roomId}/questions/${questionId}/likes/${likeId}`);
       newLike.remove();
@@ -89,7 +105,7 @@ export function Room() {
                   <img src={user.avatar} alt={user.name} />
                   <span>{user.name}</span>
                 </div>
-                : <span>Para enviar uma pergunta, <button>faça seu login</button>.</span>
+                : <span>Para enviar uma pergunta, <button onClick={handleSignIn}>faça seu login</button>.</span>
             }
             <Button type="submit" disabled={!user}>Enviar pergunta</Button>
           </div>
@@ -103,9 +119,15 @@ export function Room() {
                   key={question.id}
                   content={question.content}
                   author={question.author}
-                  onLike={() => handleLikeQuestion(question.id, question.likeId)}
-                  likeId={question.likeId}
-                  likesNumber={question.likeCount}
+                  isHighlighted={question.isHighlighted}
+                  isAnswered={question.isAnswered}
+                  actions={[
+                    <LikeButton
+                      likeId={question.likeId}
+                      likeCount={question.likeCount}
+                      onClick={() => handleLikeQuestion(question.id, question.likeId)}
+                    />
+                  ]}
                 />
               )
             })
